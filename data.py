@@ -63,4 +63,63 @@ class AlphaVantageApi:
         return df
 
 class SQLRepository:
-    
+    def __init__(self, connection):
+        self.connection = connection
+
+    def insert_table(self, table_name, records, if_exists = "fail"):
+        """
+        Insert the DataFrame in SQlite database
+
+        Parameters:
+        -----------
+        table_name: str
+            the ticker symbol can be used as a table_name
+        records: DataFrame
+        if_exists: str optional
+            'fail' - If the table exist, fail and raise error message
+            'replace' - Replace the table with the new records
+            'append' - Append the new record at the end of the existing record
+
+        Returns: dict
+            'Transaction successful: bool'
+            'Number of records inserted: int
+        """
+        n_inserted = records.to_sql(name = table_name, con=self.connection, if_exists = if_exists)
+
+        return {
+            "Transaction successful": True,
+            "Number of records inserted": int(len(records))
+        }
+
+    def read_table(self, table_name, limit=None):
+        """
+        Read the data from the database using a set limit.
+
+        Parameters
+        ----------
+        table_name: str
+            The name of the database
+        limit: int, optional
+            It retrieve the most recent value of the limit from the database. When set to none, it retrieve 
+            all the data. The default value is none.
+            
+        Returns
+        ------
+        pd.DataFrame
+            Index is DatetimeIndex "date. Column names are open, high, low and close
+            All column values are numeric
+        """
+
+        #Create the sql query with limit
+        if limit:
+            sql = f"SELECT * FROM '{table_name}' LIMIT '{limit}'"
+        else:
+            sql = f"SELECT * FROM '{table_name}'"
+
+        #Retrieve the data
+        df = pd.read_sql(sql = sql, con=self.connection, parse_dates = ["date"], index_col="date")
+
+        #Return DataFrame
+        return df
+
+        
