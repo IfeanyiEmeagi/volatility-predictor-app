@@ -39,11 +39,11 @@ class GarchModel:
     """
     
 
-    def __init__(self, ticker, repo, model_directory, use_new_data):
+    def __init__(self, ticker, repo, use_new_data):
         self.ticker = ticker
         self.repo = repo
+        self.model_directory = settings.model_directory
         self.use_new_data = use_new_data
-        self.model_directory = model_directory
     
     def wrangle_data(self, n_observations):
         """Extract data from database or AlphaVantage api, transform it 

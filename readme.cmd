@@ -6,3 +6,5 @@ xcode-select --install
 pydantic
 joblib
 arch
+fastapi
+uvicorn[standard]
