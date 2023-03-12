@@ -1,9 +1,0 @@
-Create the historical data class:
-    Use Investpy library to download the historical 
-    Convert the format to DataFrame
-    Save it in a database.
-Create a database class:
-    Save date into a database
-    Read data from a database
-Create a class for data wrangling:
-    Retrieve the data from the database and prepare it for use
