@@ -31,22 +31,6 @@ item_list = [
     "ADP-Automatic Data Processing Inc Stock"
 ]
 
-def build_model(ticker, use_new_data=False):
-
-    #Create DB connection
-    connection = sqlite3.connect(settings.db_name, check_same_thread=False)
-
-    #Instantiate the AlphaVantage class
-    api = AlphaVantageApi()
-
-    #Instantiate the repo class
-    repo = SQLRepository(connection=connection)
-
-    #Instantiate the model class
-    model = GarchModel(ticker=ticker, repo=repo, use_new_data=use_new_data)
-
-    return model
-
 def graph_func(prediction, ticker):
     df_pred = pd.DataFrame(prediction, index=["prediction"]).transpose()
     ds_pred = df_pred["prediction"]
