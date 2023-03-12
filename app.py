@@ -12,13 +12,12 @@ from data import AlphaVantageApi, SQLRepository
 from model import GarchModel
 
 
+
+app = Dash( 
+    external_stylesheets=[dbc.themes.DARKLY])
+
 #Instantiate the Process Workflow
 work_flow = ProcessWorkflow()
-
-app = Dash(__name__, 
-    external_stylesheets=[dbc.themes.DARKLY],  meta_tags=[
-        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
-    ])
 
 #Selected list of ETF and Stocks
 item_list = [
@@ -140,6 +139,7 @@ def predict(symbol):
             return dcc.Graph(figure = fig)
     else:
         return dash.no_update
+    
 
 
 if __name__ == "__main__":
