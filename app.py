@@ -5,7 +5,8 @@ import pandas as pd
 import plotly.express as px
 import sqlite3
 from config import settings
-from dash import Input, Output, State, dcc, html, Dash, ctx
+import dash
+from dash import Input, Output, State, dcc, html, Dash
 from enginehouse import ProcessWorkflow
 from data import AlphaVantageApi, SQLRepository
 from model import GarchModel
@@ -15,9 +16,9 @@ from model import GarchModel
 work_flow = ProcessWorkflow()
 
 app = Dash(__name__, 
-    external_stylesheets=[dbc.themes.DARKLY], meta_tags=[{'name': 'viewport',
-                            'content': 'width=device-width, initial-scale=1.0'}]
-            )
+    external_stylesheets=[dbc.themes.DARKLY],  meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ])
 
 #Selected list of ETF and Stocks
 item_list = [
@@ -86,6 +87,7 @@ app.layout = dbc.Container(
     ], fluid=True
 )
 
+
 #Callback section
 #*****************
 
@@ -109,30 +111,35 @@ def price_volatility_graph(symbol, selected_option):
     ]
 )
 def predict(symbol):
-    ticker = symbol.split('-')[0]
-    file_paths = os.listdir("models/")
-    today_date = datetime.datetime.now().date().strftime('%Y-%m-%d')
-    for path in file_paths:
-        fitted_ticker = path.split('.')[1].split('_')[1]
-        fitted_date = path.split('T')[0]
+    if (symbol != ""):
+        ticker = symbol.split('-')[0]
+        file_paths = os.listdir("models/")
+        today_date = datetime.datetime.now().date().strftime("%Y-%m-%d")
+        for path in file_paths:
+            fitted_ticker = path.split('.')[1].split('_')[1]
+            fitted_date = path.split('T')[0]
 
-        if (ticker == fitted_ticker) & (fitted_date == today_date):
+            if (ticker == fitted_ticker) & (fitted_date == today_date):
+                #call the prediction function
+                key = True
+                break
+            else: 
+                key = False
+        if key:
+            prediction = work_flow.predict_volatility(n_days=5)
+            fig = graph_func(prediction, ticker)
+            return dcc.Graph(figure = fig)
+        else:
+            #call the fit function
+            work_flow.fit_model(ticker, use_new_data=False, p=1, q=1)
             #call the prediction function
             prediction = work_flow.predict_volatility(n_days=5)
-            key = True
-        else: 
-            key = False
-    if key:
-        fig = graph_func(prediction, ticker)
-    else:
-        #call the fit function
-        work_flow.fit_model(ticker, use_new_data=False, p=1, q=1)
-        #call the prediction function
-        prediction = work_flow.predict_volatility(n_days=5)
-        #plot the predictions on a graph
-        fig = graph_func(prediction, ticker)
+            #plot the predictions on a graph
+            fig = graph_func(prediction, ticker)
 
-    return dcc.Graph(figure = fig)
+            return dcc.Graph(figure = fig)
+    else:
+        return dash.no_update
 
 
 if __name__ == "__main__":

@@ -32,6 +32,7 @@ class ProcessWorkflow:
     def __init__(self, repo = SQLRepository(connection=sqlite3.connect(settings.db_name, check_same_thread=False)), api = AlphaVantageApi()):
         self.repo= repo
         self.api = api
+    
 
     def plot_graph(self, ticker, graph_type, n_observations = 2000):
         self.ticker = ticker
@@ -76,8 +77,8 @@ class ProcessWorkflow:
             #================
             if graph_type == "Volatility":
                 data['rolling_6d_volatility'] = data['return'].rolling(window=6).std().dropna()
-                fig = px.line(data, x=data.index, y='rolling_6d_volatility', title = f"{self.ticker} 6D Rolling Volatility")
-                fig.update_layout(xaxis_title = "Date", yaxis_title = "Price")
+                fig = px.line(data, x=data.index, y='rolling_6d_volatility', title = f"{self.ticker} 6D Rolling Volatility Return")
+                fig.update_layout(xaxis_title = "Date", yaxis_title = "Return")
         
             else:
                 fig = px.line(data, x=data.index, y='close', title = f"{self.ticker} Historical Price")
