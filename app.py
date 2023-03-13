@@ -10,6 +10,7 @@ from dash import Input, Output, State, dcc, html, Dash
 from enginehouse import ProcessWorkflow
 from data import AlphaVantageApi, SQLRepository
 from model import GarchModel
+import time
 
 
 
@@ -67,8 +68,9 @@ app.layout = dbc.Container(
                 ),
         dbc.Row(
                 [
-                   dbc.Col(id="my_prediction", className="mb-2",  width={"size": 4,  "order": 4}),
-                    dbc.Col(id="price_volatility", className="mb-2", width={"size": 8, "order": 5})
+                   dbc.Col(id="price_volatility", className="mb-2", width={"size": 8, "order": 5}),
+                   dbc.Col(id="my_prediction", className="mb-2",  width={"size": 4,  "order": 4})
+                    
                 ]
                 ),
         dbc.Row(
@@ -98,6 +100,7 @@ app.layout = dbc.Container(
 def price_volatility_graph(symbol, selected_option):
     global ticker 
     ticker = symbol.split('-')[0]
+    time.sleep(2)
     fig = work_flow.plot_graph(ticker, selected_option)
 
     return dcc.Graph(figure = fig) 
@@ -111,6 +114,7 @@ def price_volatility_graph(symbol, selected_option):
 )
 def predict(symbol):
     if (symbol != ""):
+        time.sleep(3)
         ticker = symbol.split('-')[0]
         file_paths = os.listdir("models/")
         today_date = datetime.datetime.now().date().strftime("%Y-%m-%d")
@@ -138,7 +142,7 @@ def predict(symbol):
 
             return dcc.Graph(figure = fig)
     else:
-        return dash.no_update
+        return dash.no_update()
     
 
 

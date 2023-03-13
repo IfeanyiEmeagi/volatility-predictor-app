@@ -10,6 +10,8 @@ from config import settings
 import pandas as pd
 import plotly.graph_objects as go
 
+api = AlphaVantageApi()
+
 def build_model(ticker, use_new_data=False):
 
     #Create DB connection
