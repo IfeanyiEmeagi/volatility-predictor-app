@@ -82,7 +82,9 @@ app.layout = dbc.Container(
                         
                  ])  ), style = {"width":"18rem"}),
                 dbc.CardBody(html.P("Build by Ifeanyi Emeagi. This is for educational purposes and not a financial advise."), 
-                             style = {"color": "orange"} )
+                             style = {"color": "orange"} ),
+            html.P(html.A("https://github.com/Darlywa/volatility-predictor-app.git", href="https://github.com/Darlywa/volatility-predictor-app.git"), 
+                              )
                 ]
                 )
     ], fluid=True
@@ -114,7 +116,7 @@ def price_volatility_graph(symbol, selected_option):
 )
 def predict(symbol):
     if (symbol != ""):
-        time.sleep(3)
+        time.sleep(5)
         ticker = symbol.split('-')[0]
         file_paths = os.listdir("models/")
         today_date = datetime.datetime.now().date().strftime("%Y-%m-%d")
